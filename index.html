@@ -1,12 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
-        <title>Hello World Simple App</title>
-    </head>
-    <body>
-        <div>Hello World!</div>
-    </body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>randomizer app for kut</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100%;
+      }
+
+      form {
+        padding: 1rem;
+        width: 300px;
+        height: 180px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .input-container {
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center;
+      }
+      .submit {
+        background: transparent;
+        border: none;
+        background-color: chartreuse;
+        max-width: 50px;
+        padding: 0.5rem;
+        border-radius: 8px;
+        color: white;
+        font-size: large;
+        font-weight: 500;
+        text-align: center;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <form>
+        <div class="input-container">
+          <input type="text" id="name" minlength="5" required />
+          <label for="name">نام و نام خانوادگی </label>
+        </div>
+        <div class="input-container">
+          <input type="text" id="id" minlength="9" maxlength="9" required />
+          <label for="id">شماره دانشجویی </label>
+        </div>
+        <input class="submit" type="submit" value="ارسال" />
+      </form>
+      <div class="message">
+        لطفا اطلاعات خود را وارد کنید و سپس روی دکمه ارسال کلیک یا تاچ کنید
+      </div>
+    </div>
+    <script>
+      const loginForm = document.querySelector("form");
+      const name = document.querySelector("#name");
+      const id = document.querySelector("#id");
+      const msg = document.querySelector(".message");
+
+      const submitForm = () => {
+        fetch("https://randomizer-w0s9.onrender.com/submit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: name.value,
+            studentId: id.value,
+          }),
+        })
+          .then((res) => {
+            return res.json();
+          })
+          .then((data) => (msg.innerText = data.message));
+      };
+
+      loginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        submitForm();
+      });
+    </script>
+  </body>
 </html>
