@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
 const mongoose = require("mongoose");
@@ -33,8 +33,7 @@ const DATES = mongoose.model("dates", dates);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-
-app.get('/', async (req, res) => {
+app.get("/", async (req, res) => {
   const path = __dirname + "/index.html";
   res.sendFile(path);
 });
@@ -51,21 +50,27 @@ app.post("/submit", async (req, res) => {
       cId: "1",
     });
     let dates = DatesModel.data;
-    const studentDateIndex = randomIntFromInterval(0, dates.length);
-    const studentSetDate = dates[studentDateIndex];
-    const newUser = new STUDENT({
-      name,
-      studentId,
-      setDate: studentSetDate,
-    });
-    await newUser.save();
-    dates = dates.filter((item) => item !== studentSetDate);
-    DatesModel.data = dates;
-    await DatesModel.save();
-    res.status(200).send({
-      message: `درخواست شما با موفقیت ثبت شد
+    if (dates.length === 0) {
+      res.status(400).send({
+        message: "ظرفیت پر شده است",
+      });
+    } else {
+      const studentDateIndex = randomIntFromInterval(0, dates.length);
+      const studentSetDate = dates[studentDateIndex];
+      const newUser = new STUDENT({
+        name,
+        studentId,
+        setDate: studentSetDate,
+      });
+      await newUser.save();
+      dates = dates.filter((item) => item !== studentSetDate);
+      DatesModel.data = dates;
+      await DatesModel.save();
+      res.status(200).send({
+        message: `درخواست شما با موفقیت ثبت شد
       تاریخ شما: ${studentSetDate}`,
-    });
+      });
+    }
   }
 });
 
